@@ -1,13 +1,13 @@
-drop database cmpuserdb;
+drop database cmp;
 drop user cmpuser;
 
-create user cmpuser with password 'password';
-create database cmpuserdb with template=template0 owner=cmpuser;
-\connect cmpuserdb;
+create user cmpuser with password 'test123';
+create database cmp with template=template0 owner=cmpuser;
+\connect cmp;
 alter default privileges grant all on tables to cmpuser;
 alter default privileges grant all on sequences to cmpuser;
 
-create table users(
+create table ca_users(
     user_id integer primary key not null,
     first_name varchar(255) not null,
     last_name varchar(255) not null,
@@ -15,4 +15,5 @@ create table users(
     password text not null
 );
 
-create sequence users_seq increment 1 start 1;
+create sequence ca_users_seq increment 1 start 1;
+
