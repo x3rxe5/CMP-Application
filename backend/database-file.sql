@@ -12,7 +12,8 @@ create table ca_users(
     first_name varchar(255) not null,
     last_name varchar(255) not null,
     email varchar(255) not null,
-    password text not null
+    password text not null,
+    dob date not null
 );
 
 create sequence ca_users_seq increment 1 start 1;
