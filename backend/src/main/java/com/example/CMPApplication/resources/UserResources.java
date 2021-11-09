@@ -31,7 +31,7 @@ public class UserResources {
         String lastName = (String) userMap.get("lastName");
         String email = (String) userMap.get("email");
         String password = (String) userMap.get("password");
-        Date dob = (Date) userMap.get("dob");
+        String dob = (String) userMap.get("dob");
 
         User user = userService.registerUser(firstName,lastName,email,password,dob);
 

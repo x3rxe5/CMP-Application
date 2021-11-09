@@ -8,7 +8,7 @@ import java.sql.Date;
 public interface UserRepository {
 
     // for creating user
-    Integer create(String firstName, String lastName, String email, String password, Date dob) throws ETAuthExceptions;
+    Integer create(String firstName, String lastName, String email, String password, String dob) throws ETAuthExceptions;
 
     // finding by email id and password
     User findByEmailAndPassword(String email,String password) throws ETAuthExceptions;
