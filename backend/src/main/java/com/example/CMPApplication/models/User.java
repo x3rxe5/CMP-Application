@@ -10,12 +10,12 @@ public class User {
     private String lastName;
     private String email;
     private String password;
-    private Date dob;
+    private String dob;
 
     // Constructor
     public User(){}
 
-    public User(String firstName, String lastName, String email, String password, Date dob) {
+    public User(String firstName, String lastName, String email, String password, String dob) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -23,7 +23,7 @@ public class User {
         this.dob = dob;
     }
 
-    public User(int user_id, String first_name, String last_name, String email, String password, Date dob) {
+    public User(int user_id, String first_name, String last_name, String email, String password, String dob) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -74,11 +74,11 @@ public class User {
         this.password = password;
     }
 
-    public Date getDob() {
+    public String getDob() {
         return dob;
     }
 
-    public void setDob(Date dob) {
+    public void setDob(String dob) {
         this.dob = dob;
     }
 

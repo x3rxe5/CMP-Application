@@ -2,12 +2,12 @@ package com.example.CMPApplication.services;
 
 import com.example.CMPApplication.exceptions.ETAuthExceptions;
 import com.example.CMPApplication.models.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.example.CMPApplication.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
+import java.util.regex.Pattern;
 
 @Service
 @Transactional
@@ -22,7 +22,18 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User registerUser(String firstName, String lastName, String email, String password, Date dob) throws ETAuthExceptions {
+    public User registerUser(String firstName, String lastName, String email, String password, String dob) throws ETAuthExceptions {
+
+        Pattern pattern = Pattern.compile("^(.+)@(.+)$");
+
+        if(email != null) email = email.toLowerCase();
+
+        if (!pattern.matcher(email).matches()) throw new ETAuthExceptions("Not Valid email address");
+
+        int count = userRepository.getCountByEmail(email);
+
+        if(count > 0) throw new ETAuthExceptions("Email address already registered");
+
         Integer userId = userRepository.create(firstName,lastName,email,password,dob);
         return userRepository.findById(userId);
     }
