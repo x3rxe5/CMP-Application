@@ -8,10 +8,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.util.HashMap;
@@ -25,13 +22,16 @@ public class UserResources {
     @Autowired
     UserService userService;
 
+
     @PostMapping("/login")
     public ResponseEntity<Map<String,String>> loginUser(@RequestBody Map<String,Object> userMap){
+
         String email = (String) userMap.get("email");
         String password = (String) userMap.get("password");
         User user = userService.validateUser(email,password);
-        return new ResponseEntity<>(generateToken(user),HttpStatus.OK);
+        return new ResponseEntity<>(generateToken(user), HttpStatus.OK);
     }
+
 
     @PostMapping("/register")
     public ResponseEntity<Map<String,String>> createUser(@RequestBody Map<String,Object> userMap){
@@ -42,13 +42,7 @@ public class UserResources {
         String password = (String) userMap.get("password");
         String dob = (String) userMap.get("dob");
         String userName = (String) userMap.get("username");
-
-        // Creating UUID for the users username
-        UUID uuid = UUID.randomUUID();
-        String numericUUID = Long.toString(uuid.getMostSignificantBits())
-                + Long.toString(uuid.getLeastSignificantBits());
-
-        userName = userName + "#" +numericUUID;
+        userName = generateUUIDToken(userName);
 
         User user = userService.registerUser(firstName,lastName,userName,email,password,dob);
 
@@ -69,6 +63,17 @@ public class UserResources {
         Map<String,String> map = new HashMap<>();
         map.put("token",token);
         return map;
+    }
+
+    private String generateUUIDToken(String username){
+
+        UUID uuid = UUID.randomUUID();
+        String numericUUID = Long.toString(uuid.getMostSignificantBits())
+                + Long.toString(uuid.getLeastSignificantBits());
+
+        System.out.println(username+"#"+numericUUID.substring(3,7));
+
+        return username + "#" + numericUUID.substring(3,7);
     }
 
 }

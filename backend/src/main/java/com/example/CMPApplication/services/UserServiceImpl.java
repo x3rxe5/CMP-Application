@@ -19,11 +19,17 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User validateUser(String email, String password) throws ETAuthExceptions {
+
         Pattern pattern = Pattern.compile("^(.+)@(.+)$");
+
         if(email != null){ email = email.toLowerCase();}
-        if(pattern.matcher(email).matches()){ throw new ETAuthExceptions("Email Does not match"); }
+
+        if(!pattern.matcher(email).matches()){
+            throw new ETAuthExceptions("Please provide the valid email");
+        }
 
         return userRepository.findByEmailAndPassword(email, password);
+
     }
 
     @Override

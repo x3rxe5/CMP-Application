@@ -29,7 +29,7 @@ public class UserRepositoryImpl implements UserRepository {
     private final static String SQL_COUNT_BY_EMAIL = " SELECT COUNT(*) FROM ca_users WHERE EMAIL = ?";
 
     // count by email and password
-    private final static String SQL_FIND_BY_EMAIL = "SELECT USER_ID, EMAIL, USERNAME, PASSWORD FROM ca_users WHERE EMAIL = ? AND PASSWORD = ?";
+    private final static String SQL_FIND_BY_EMAIL = "SELECT USER_ID, EMAIL, USERNAME, PASSWORD FROM ca_users WHERE EMAIL = ?";
 
 
     @Autowired
@@ -39,20 +39,20 @@ public class UserRepositoryImpl implements UserRepository {
         return new User(
                 rs.getInt("USER_ID"),
                 rs.getString("EMAIL"),
-                rs.getString("USERNAME"),
-                rs.getString("PASSWORD")
+                rs.getString("PASSWORD"),
+                rs.getString("USERNAME")
         );
     });
 
     public RowMapper<User> userRowMapper = ((rs, rowNum) -> {
        return new User(
                rs.getInt("USER_ID"),
-               rs.getString("USERNAME"),
                rs.getString("FIRST_NAME"),
                rs.getString("LAST_NAME"),
                rs.getString("EMAIL"),
                rs.getString("PASSWORD"),
-               rs.getString("DOB")
+               rs.getString("DOB"),
+               rs.getString("USERNAME")
        );
     });
 
@@ -81,13 +81,11 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User findByEmailAndPassword(String email, String password) throws ETAuthExceptions {
-        try{
-            User user = jdbcTemplate.queryForObject(
-                    SQL_FIND_BY_EMAIL,
-                    userRowMapperIdAndPassword,
-                    new Object[]{email,password}
-            );
 
+        try{
+            User user = jdbcTemplate.queryForObject(SQL_FIND_BY_EMAIL, userRowMapperIdAndPassword, new Object[]{email});
+
+            System.out.println(user);
             if(!BCrypt.checkpw(password,user.getPassword())){
                 throw new ETAuthExceptions("INVALID EMAIL OR PASSWORD");
             }
