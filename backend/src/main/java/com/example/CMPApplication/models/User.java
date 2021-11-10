@@ -15,6 +15,12 @@ public class User {
     // Constructor
     public User(){}
 
+    public User(int id,String email,String password){
+        this.id = id;
+        this.email = email;
+        this.password = password;
+    }
+
     public User(String firstName, String lastName, String email, String password, String dob) {
         this.firstName = firstName;
         this.lastName = lastName;

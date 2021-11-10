@@ -28,9 +28,20 @@ public class UserRepositoryImpl implements UserRepository {
     // Count by email
     private final static String SQL_COUNT_BY_EMAIL = " SELECT COUNT(*) FROM CA_USERS WHERE EMAIL = ?";
 
+    // count by email and password
+    private final static String SQL_FIND_BY_EMAIL = "SELECT USER_ID, EMAIL, PASSWORD FROM ca_users WHERE EMAIL = ? AND PASSWORD = ?";
+
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+
+    public RowMapper<User> userRowMapperIdAndPassword = ((rs,rowNum) -> {
+        return new User(
+                rs.getInt("USER_ID"),
+                rs.getString("EMAIL"),
+                rs.getString("PASSWORD")
+        );
+    });
 
     public RowMapper<User> userRowMapper = ((rs, rowNum) -> {
        return new User(
@@ -54,7 +65,7 @@ public class UserRepositoryImpl implements UserRepository {
                 ps.setString(1,firstName);
                 ps.setString(2,lastName);
                 ps.setString(3,email);
-                ps.setString(4,password);
+                ps.setString(4,hashPassword);
                 ps.setDate(5, Date.valueOf(date));
                 return ps;
             },keyHolder);
@@ -67,7 +78,21 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User findByEmailAndPassword(String email, String password) throws ETAuthExceptions {
-        return null;
+        try{
+            User user = jdbcTemplate.queryForObject(
+                    SQL_FIND_BY_EMAIL,
+                    userRowMapperIdAndPassword,
+                    new Object[]{email,password}
+            );
+
+            if(!BCrypt.checkpw(password,user.getPassword())){
+                throw new ETAuthExceptions("INVALID EMAIL OR PASSWORD");
+            }
+
+            return user;
+        }catch (Exception e){
+            throw new ETAuthExceptions("Error Occur");
+        }
     }
 
     @Override
