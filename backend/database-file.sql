@@ -16,5 +16,16 @@ create table ca_users(
     dob date not null
 );
 
-create sequence ca_users_seq increment 1 start 1;
+create table ca_media(
+    user_id integer not null,
+    media_id integer primary key not null,
+    name varchar(255) not null,
+    media_size decimal not null,
+    url varchar(255) not null,
+    contentType bytea not null;
+);
+alter table ca_media add constraint media_cat_fk
+foreign key(user_id) references ca_users(user_id);
 
+create sequence ca_users_seq increment 1 start 1;
+create sequence ca_media_seq increment 1 start 1;
