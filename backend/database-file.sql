@@ -14,6 +14,7 @@ create table ca_users(
     email varchar(255) not null,
     password text not null,
     dob date not null
+    username varchar(255) not null
 );
 
 create table ca_media(
@@ -22,7 +23,7 @@ create table ca_media(
     name varchar(255) not null,
     media_size decimal not null,
     url varchar(255) not null,
-    contentType bytea not null;
+    contentType bytea not null
 );
 alter table ca_media add constraint media_cat_fk
 foreign key(user_id) references ca_users(user_id);
