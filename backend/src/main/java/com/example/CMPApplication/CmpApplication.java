@@ -39,7 +39,7 @@ public class CmpApplication {
 		FilterRegistrationBean<AuthFilter> registrationBean = new FilterRegistrationBean<>();
 		AuthFilter authFilter = new AuthFilter();
 		registrationBean.setFilter(authFilter);
-		registrationBean.addUrlPatterns("api/v1/chatroom/*");
+		registrationBean.addUrlPatterns("/api/v1/chatroom/*");
 
 		return registrationBean;
 	}

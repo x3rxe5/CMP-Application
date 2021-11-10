@@ -9,5 +9,5 @@ import java.sql.Date;
 @Service
 public interface UserService {
     User validateUser(String email,String password) throws ETAuthExceptions;
-    User registerUser(String firstName,String lastName,String email,String password,String dob) throws ETAuthExceptions;
+    User registerUser(String firstName,String lastName,String userName,String email,String password,String dob) throws ETAuthExceptions;
 }

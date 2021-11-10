@@ -8,6 +8,7 @@ public class User {
     private int id;
     private String firstName;
     private String lastName;
+    private String userName;
     private String email;
     private String password;
     private String dob;
@@ -15,24 +16,27 @@ public class User {
     // Constructor
     public User(){}
 
-    public User(int id,String email,String password){
+    public User(int id,String email,String password,String userName){
         this.id = id;
         this.email = email;
         this.password = password;
+        this.userName = userName;
     }
 
-    public User(String firstName, String lastName, String email, String password, String dob) {
+    public User(String firstName, String lastName, String userName,String email, String password, String dob) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.userName = userName;
         this.email = email;
         this.password = password;
         this.dob = dob;
     }
 
-    public User(int user_id, String first_name, String last_name, String email, String password, String dob) {
+    public User(int id, String firstName, String userName,String lastName, String email, String password, String dob) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.userName = userName;
         this.email = email;
         this.password = password;
         this.dob = dob;
@@ -47,6 +51,14 @@ public class User {
         this.id = id;
     }
 
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
     public String getLastName() {
         return lastName;
@@ -97,6 +109,7 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", username='" + userName + '\'' +
                 ", dob=" + dob +
                 '}';
     }

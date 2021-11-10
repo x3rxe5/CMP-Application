@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -40,8 +41,16 @@ public class UserResources {
         String email = (String) userMap.get("email");
         String password = (String) userMap.get("password");
         String dob = (String) userMap.get("dob");
+        String userName = (String) userMap.get("username");
 
-        User user = userService.registerUser(firstName,lastName,email,password,dob);
+        // Creating UUID for the users username
+        UUID uuid = UUID.randomUUID();
+        String numericUUID = Long.toString(uuid.getMostSignificantBits())
+                + Long.toString(uuid.getLeastSignificantBits());
+
+        userName = userName + "#" +numericUUID;
+
+        User user = userService.registerUser(firstName,lastName,userName,email,password,dob);
 
         return new ResponseEntity<>(generateToken(user), HttpStatus.CREATED);
     }
@@ -52,6 +61,7 @@ public class UserResources {
                 .setIssuedAt(new Date(timeStamp))
                 .setExpiration(new Date(timeStamp + Constants.TOKEN_VALIDITY))
                 .claim("userId",user.getId())
+                .claim("username",user.getUserName())
                 .claim("firstName",user.getFirstName())
                 .claim("lastName",user.getLastName())
                 .claim("email",user.getEmail())
