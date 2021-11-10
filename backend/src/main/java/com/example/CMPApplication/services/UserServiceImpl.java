@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 @Service
@@ -18,11 +19,21 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User validateUser(String email, String password) throws ETAuthExceptions {
-        return null;
+
+        Pattern pattern = Pattern.compile("^(.+)@(.+)$");
+
+        if(email != null){ email = email.toLowerCase();}
+
+        if(!pattern.matcher(email).matches()){
+            throw new ETAuthExceptions("Please provide the valid email");
+        }
+
+        return userRepository.findByEmailAndPassword(email, password);
+
     }
 
     @Override
-    public User registerUser(String firstName, String lastName, String email, String password, String dob) throws ETAuthExceptions {
+    public User registerUser(String firstName, String lastName, String userName,String email, String password, String dob) throws ETAuthExceptions {
 
         Pattern pattern = Pattern.compile("^(.+)@(.+)$");
 
@@ -34,7 +45,7 @@ public class UserServiceImpl implements UserService{
 
         if(count > 0) throw new ETAuthExceptions("Email address already registered");
 
-        Integer userId = userRepository.create(firstName,lastName,email,password,dob);
+        Integer userId = userRepository.create(firstName,lastName,userName,email,password,dob);
         return userRepository.findById(userId);
     }
 }
