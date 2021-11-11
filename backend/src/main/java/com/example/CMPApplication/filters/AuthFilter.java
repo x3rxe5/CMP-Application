@@ -27,9 +27,10 @@ public class AuthFilter extends GenericFilterBean {
                 String token = authHeaderArr[1];
                 try{
                     Claims claims = Jwts.parser().setSigningKey(Constants.API_SECRET_KEY).parseClaimsJws(token).getBody();
-                    request.setAttribute("userId",Integer.parseInt(claims.get("USER_ID").toString()));
+                    request.setAttribute("userId",Integer.parseInt(claims.get("userId").toString()));
                 }catch(Exception e){
                     response.sendError(HttpServletResponse.SC_FORBIDDEN,"Invalid Token");
+                    return;
                 }
             }else{
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST,"Authorization token must be Bearer [Token]");
