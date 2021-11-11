@@ -18,12 +18,12 @@ create table ca_users(
 );
 
 create table ca_media(
-    user_id integer not null,
     media_id integer primary key not null,
+    user_id integer not null,
     name varchar(255) not null,
     media_size decimal not null,
-    url varchar(255) not null,
-    contentType bytea not null
+    contentType bytea not null,
+    data bytea not null
 );
 alter table ca_media add constraint media_cat_fk
 foreign key(user_id) references ca_users(user_id);
