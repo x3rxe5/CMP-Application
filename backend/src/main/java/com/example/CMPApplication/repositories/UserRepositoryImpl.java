@@ -20,17 +20,29 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     // SQL_CREATE STRING
-    private static final String SQL_CREATE = "INSERT INTO CA_USERS (USER_ID,FIRST_NAME,LAST_NAME,EMAIL,PASSWORD,DOB) VALUES ( NEXTVAL('CA_USERS_SEQ') , ?, ?, ?, ?, ?)";
+    private static final String SQL_CREATE = "INSERT INTO ca_users ( USER_ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, DOB, USERNAME) VALUES ( NEXTVAL('CA_USERS_SEQ') , ?, ?, ?, ?, ?, ?)";
 
     // SQL_FIND_BY ID
-    private final static String SQL_FIND_BY_ID = "SELECT USER_ID,FIRST_NAME,LAST_NAME,EMAIL,PASSWORD,DOB FROM CA_USERS WHERE USER_ID = ?";
+    private final static String SQL_FIND_BY_ID = "SELECT USER_ID,FIRST_NAME,LAST_NAME,EMAIL,PASSWORD,DOB,USERNAME FROM ca_users WHERE USER_ID = ?";
 
-    // Count by email
-    private final static String SQL_COUNT_BY_EMAIL = " SELECT COUNT(*) FROM CA_USERS WHERE EMAIL = ?";
+    // Count by emails
+    private final static String SQL_COUNT_BY_EMAIL = " SELECT COUNT(*) FROM ca_users WHERE EMAIL = ?";
+
+    // count by email and password
+    private final static String SQL_FIND_BY_EMAIL = "SELECT USER_ID, EMAIL, USERNAME, PASSWORD FROM ca_users WHERE EMAIL = ?";
 
 
     @Autowired
     JdbcTemplate jdbcTemplate;
+
+    public RowMapper<User> userRowMapperIdAndPassword = ((rs,rowNum) -> {
+        return new User(
+                rs.getInt("USER_ID"),
+                rs.getString("EMAIL"),
+                rs.getString("PASSWORD"),
+                rs.getString("USERNAME")
+        );
+    });
 
     public RowMapper<User> userRowMapper = ((rs, rowNum) -> {
        return new User(
@@ -39,12 +51,13 @@ public class UserRepositoryImpl implements UserRepository {
                rs.getString("LAST_NAME"),
                rs.getString("EMAIL"),
                rs.getString("PASSWORD"),
-               rs.getString("DOB")
+               rs.getString("DOB"),
+               rs.getString("USERNAME")
        );
     });
 
     @Override
-    public Integer create(String firstName, String lastName, String email, String password, String dob) throws ETAuthExceptions {
+    public Integer create(String firstName, String lastName, String userName, String email, String password, String dob) throws ETAuthExceptions {
         try{
             String hashPassword = BCrypt.hashpw(password,BCrypt.gensalt(12));
             KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -54,8 +67,9 @@ public class UserRepositoryImpl implements UserRepository {
                 ps.setString(1,firstName);
                 ps.setString(2,lastName);
                 ps.setString(3,email);
-                ps.setString(4,password);
+                ps.setString(4,hashPassword);
                 ps.setDate(5, Date.valueOf(date));
+                ps.setString(6,userName);
                 return ps;
             },keyHolder);
             return (Integer) keyHolder.getKeys().get("USER_ID");
@@ -67,7 +81,19 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User findByEmailAndPassword(String email, String password) throws ETAuthExceptions {
-        return null;
+
+        try{
+            User user = jdbcTemplate.queryForObject(SQL_FIND_BY_EMAIL, userRowMapperIdAndPassword, new Object[]{email});
+
+            System.out.println(user);
+            if(!BCrypt.checkpw(password,user.getPassword())){
+                throw new ETAuthExceptions("INVALID EMAIL OR PASSWORD");
+            }
+
+            return user;
+        }catch (Exception e){
+            throw new ETAuthExceptions("Error Occur");
+        }
     }
 
     @Override

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MediaRepository {
 
-    Integer create(int userId,Double name,String url,Byte[] contentType) throws ETMediaException;
+    Integer create(int userId, String name, Long size, String ContentType, byte[] data) throws ETMediaException;
 
-    Media findById(int id) throws ETMediaException;
+    Media findById(int mediaId,int userId) throws ETMediaException;
 }

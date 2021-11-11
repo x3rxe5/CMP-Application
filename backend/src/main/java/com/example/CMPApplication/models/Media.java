@@ -1,36 +1,58 @@
 package com.example.CMPApplication.models;
 
+import java.util.Arrays;
+
 public class Media {
 
-    private int id;
+    private int mediaId;
+    private int userId;
     private String name;
     private Long size;
-    private String url;
     private String contentType;
+    private byte[] data;
 
     public Media() {}
 
-    public Media(int id,String name, Long size, String url, String contentType) {
-        this.id = id;
+
+    public Media(int mediaId, int userId, String name, Long size, String contentType, byte[] data) {
+        this.mediaId = mediaId;
+        this.userId = userId;
         this.name = name;
         this.size = size;
-        this.url = url;
         this.contentType = contentType;
+        this.data = data;
     }
 
-    public Media(String name, Long size, String url, String contentType) {
+    public Media(int userId, String name, Long size, String contentType, byte[] data) {
+        this.userId = userId;
         this.name = name;
         this.size = size;
-        this.url = url;
         this.contentType = contentType;
+        this.data = data;
     }
 
-    public int getId() {
-        return id;
+    public Media(String name, Long size, String contentType, byte[] data) {
+        this.name = name;
+        this.size = size;
+        this.contentType = contentType;
+        this.data = data;
     }
 
-    public void setId(int id) {
-        this.id = id;
+
+    public int getMediaId() {
+        return mediaId;
+    }
+
+    public void setMediaId(int mediaId) {
+        this.mediaId = mediaId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -49,14 +71,6 @@ public class Media {
         this.size = size;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public String getContentType() {
         return contentType;
     }
@@ -65,15 +79,26 @@ public class Media {
         this.contentType = contentType;
     }
 
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
+
     @Override
     public String toString() {
         return "Media{" +
-                "id=" + id +
+                "mediaId=" + mediaId +
+                ", userId=" + userId +
                 ", name='" + name + '\'' +
                 ", size=" + size +
-                ", url='" + url + '\'' +
                 ", contentType='" + contentType + '\'' +
+                ", data=" + Arrays.toString(data) +
                 '}';
     }
+
 
 }
