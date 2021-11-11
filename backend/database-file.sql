@@ -22,7 +22,7 @@ create table ca_media(
     user_id integer not null,
     name varchar(255) not null,
     media_size decimal not null,
-    contentType bytea not null,
+    contentType varchar(255) not null,
     data bytea not null
 );
 alter table ca_media add constraint media_cat_fk
