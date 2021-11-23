@@ -56,9 +56,8 @@ public class AuthFilter extends GenericFilterBean {
         filterChain.doFilter(request,response);
     }
 
-    public void parsingToken(ServletRequest servletRequest, String token){
-
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
+    // Private method for parsing token
+    private void parsingToken(HttpServletRequest request, String token){
 
         Claims claims = Jwts.parser().setSigningKey(Constants.API_SECRET_KEY).parseClaimsJws(token).getBody();
         request.setAttribute("userId",Integer.parseInt(claims.get("userId").toString()));
