@@ -27,7 +27,7 @@ public class AuthFilter extends GenericFilterBean {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         String authHeader = request.getHeader("Authorization");
-        Cookie name = WebUtils.getCookie(request, "jwt");
+        Cookie name = WebUtils.getCookie(request, "token");
 
         if(authHeader != null){
             String authHeaderArr[] = authHeader.split("Bearer ");
