@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,17 +26,26 @@ public class UserResources {
 
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String,String>> loginUser(@RequestBody Map<String,Object> userMap){
+    public ResponseEntity<Map<String,String>> loginUser(HttpServletResponse response, @RequestBody Map<String, Object> userMap){
 
         String email = (String) userMap.get("email");
         String password = (String) userMap.get("password");
         User user = userService.validateUser(email,password);
-        return new ResponseEntity<>(generateToken(user), HttpStatus.OK);
+
+        // for setting up cookie
+        Map<String,String> cookieMap = generateToken(user);
+        Cookie cookie = generateCookie(cookieMap.get("token"));
+
+        // adding cookie to the response
+        response.addCookie(cookie);
+
+        // return the status
+        return new ResponseEntity<>(cookieMap, HttpStatus.OK);
     }
 
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String,String>> createUser(@RequestBody Map<String,Object> userMap){
+    public ResponseEntity<Map<String,String>> createUser(HttpServletResponse response,@RequestBody Map<String,Object> userMap){
 
         String firstName = (String) userMap.get("firstName");
         String lastName = (String) userMap.get("lastName");
@@ -46,7 +57,14 @@ public class UserResources {
 
         User user = userService.registerUser(firstName,lastName,userName,email,password,dob);
 
-        return new ResponseEntity<>(generateToken(user), HttpStatus.CREATED);
+        // for setting up cookie
+        Map<String,String> cookieMap = generateToken(user);
+        Cookie cookie = generateCookie(cookieMap.get("token"));
+
+        // adding cookie to the response
+        response.addCookie(cookie);
+
+        return new ResponseEntity<>(cookieMap, HttpStatus.CREATED);
     }
 
     private Map<String,String> generateToken(User user){
@@ -71,9 +89,17 @@ public class UserResources {
         String numericUUID = Long.toString(uuid.getMostSignificantBits())
                 + Long.toString(uuid.getLeastSignificantBits());
 
-        System.out.println(username+"#"+numericUUID.substring(3,7));
 
         return username + "#" + numericUUID.substring(3,7);
+    }
+
+    private Cookie generateCookie(String token){
+        Cookie cookie = new Cookie("token", token);
+        cookie.setMaxAge(3 * 24 * 60 * 60); // expires in 3 days
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+
+        return cookie;
     }
 
 }
