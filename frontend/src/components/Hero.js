@@ -4,7 +4,7 @@ const Hero = () => {
 
     const clickMe = async () =>{
         await axios.get("http://localhost:8080/")
-        .then(res => console.log(res.json()))
+        .then(res => console.log(res.data))
         .catch(err => console.log("error occured => ",err.stack));
     }
 
