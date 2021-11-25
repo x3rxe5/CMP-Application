@@ -1,9 +1,10 @@
 import axios from "axios";
+import Constants from "./../Constant";
 
 const Hero = () => {
 
     const clickMe = async () =>{
-        await axios.get("http://localhost:8080/")
+        await axios.get(Constants.Backend_URL+"/")
         .then(res => console.log(res.data))
         .catch(err => console.log("error occured => ",err.stack));
     }

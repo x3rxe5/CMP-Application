@@ -32,7 +32,7 @@ const Header = () => {
                         Register                        
                     </Link>
 
-                    <button className="inline-flex items-center bg-green-300 border-0 py-1 px-3 focus:outline-none hover:bg-green-400 rounded text-base mt-4 md:mt-0 md:ml-2">
+                    <Link className="inline-flex items-center bg-green-300 border-0 py-1 px-3 focus:outline-none hover:bg-green-400 rounded text-base mt-4 md:mt-0 md:ml-2" to="/login">
                         Login
                         <svg
                             fill="none"
@@ -45,7 +45,7 @@ const Header = () => {
                         >
                             <path d="M5 12h14M12 5l7 7-7 7" />
                         </svg>
-                    </button>
+                    </Link>
 
                 </div>
 

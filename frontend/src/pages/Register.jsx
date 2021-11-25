@@ -3,18 +3,21 @@ import axios from "axios";
 import { ToastContainer } from 'react-toastify';
 import ToastComponent from '../components/ToastComponent';
 import 'react-toastify/dist/ReactToastify.css';
+import Calendar from "react-calendar";
+import 'react-calendar/dist/Calendar.css';
+import Constants from '../Constant';
+
 
 export default function Signup() {
+
   const [user,setUser] = useState({
     username:'',
     email:'',
     password:'',
-    confirmPassword:'',
-    photo:''
+    firstName:"",
+    lastName:"",
+    dob:""
   });
-
-  
-  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -22,12 +25,14 @@ export default function Signup() {
     formData.append('username', user.username);
     formData.append('email', user.email);
     formData.append('password', user.password);
-    formData.append('confirmPassword', user.confirmPassword);
-    formData.append('photo', user.photo);
+    formData.append('dob', user.dob);
+    formData.append('firstName', user.firstName);
+    formData.append('lastName', user.lastName);
 
-    if(user.username !== '' && user.email !== '' && user.password !== '' && user.confirmPassword !== '' && user.photo !== ''){
+
+    if(user.username !== '' && user.email !== '' && user.password !== '' && user.firstName !== '' && user.lastName !== '' && user.dob !== ''){
       console.log(user);
-      axios.post('http://localhost:5000/signup', formData, { withCredentials:true })
+      axios.post(Constants.Backend_URL+'/api/v1/users/register', formData, { withCredentials:true })
       .then(res => {
         console.log(`this is status -> `,res.status);
         if(res.status === 201){
@@ -67,56 +72,93 @@ export default function Signup() {
             </h2>
             <div className="mt-12">
               <form onSubmit={handleSubmit} encType='multipart/form-data'> 
-                <div>
-                  <div className="text-sm font-bold text-gray-700 tracking-wide">
-                    Username
-                  </div>
-                  <input
-                    className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
-                    type="text"
-                    placeholder=""        
-                    name="username"                 
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="mt-5">
-                  <div className="text-sm font-bold text-gray-700 tracking-wide">
-                    Email Address
-                  </div>
-                  <input
-                    className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
-                    type="email"
-                    name="email"
-                    placeholder="mike@gmail.com"
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="mt-5">
-                  <div className="flex justify-between items-center">
+                <div className="flex flex-1 w-full">
+                  <div className='w-1/2'>
                     <div className="text-sm font-bold text-gray-700 tracking-wide">
-                      Password
-                    </div>                    
+                      First Name
+                    </div>
+                    <input
+                      className="w-1/2 text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
+                      type="text"
+                      placeholder="Joe"        
+                      name="firstName"                 
+                      onChange={handleChange}
+                    />
                   </div>
-                  <input
-                    className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
-                    type="password"
-                    name="password"
-                    placeholder="Enter your password"
-                    onChange={handleChange}
-                  />
+                  <div className='w-1/2'>
+                    <div className="text-sm font-bold text-gray-700 tracking-wide">
+                      Last Name
+                    </div>
+                    <input
+                      className="w-1/2 text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
+                      type="text"
+                      placeholder="Doe"        
+                      name="lastName"    
+                      onChange={handleChange}
+                    />
+                  </div>
                 </div>
-                <div className='mt-5'>
-                  <div className="text-sm font-bold text-gray-700 tracking-wide">
-                    Confirm Password
+                  <div className="flex flex-1 w-full">
+                    <div className="mt-5 w-1/2">
+                      <div className="text-sm font-bold text-gray-700 tracking-wide">
+                        Email Address
+                      </div>
+                      <input
+                        className="w-1/2 text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
+                        type="email"
+                        name="email"
+                        placeholder="mike@gmail.com"
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="mt-5 w-1/2">
+                      <div className="flex justify-between items-center">
+                        <div className="text-sm font-bold text-gray-700 tracking-wide">
+                          Password
+                        </div>                    
+                      </div>
+                      <input
+                        className="w-1/2 text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
+                        type="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        onChange={handleChange}
+                      />
+                    </div>                            
                   </div>
-                  <input
-                    className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
-                    type="password"
-                    name="confirmPassword"
-                    placeholder=""
-                    onChange={handleChange}
-                  />
-                </div>                
+
+
+                <div className="flex flex-1 w-full mt-6">
+                  <div className='w-1/2'>
+                    <div className="text-sm font-bold text-gray-700 tracking-wide">
+                      Username
+                    </div>
+                    <input
+                      className="w-1/2 text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
+                      type="text"
+                      placeholder=""        
+                      name="username"                 
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className='w-1/2'>
+                    <div className="text-sm font-bold text-gray-700 tracking-wide">
+                      Date of birth
+                    </div>
+                    <Calendar 
+                      onChange={handleChange}
+                      selectRange={true}
+                      defaultView='decade'
+                    />
+                    {/* <input
+                      className="w-1/2 text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
+                      type="text"
+                      placeholder="birth date"        
+                      name="dob"    
+                      onChange={handleChange}
+                    /> */}
+                  </div>
+                </div>
                 <div className="mt-10">
                   <button
                     className="bg-indigo-500 text-gray-100 p-4 w-full rounded-full tracking-wide
