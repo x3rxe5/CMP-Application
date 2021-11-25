@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -13,6 +14,7 @@ import org.springframework.web.filter.CorsFilter;
 import java.nio.file.attribute.FileTime;
 
 @SpringBootApplication
+@RestController
 public class CmpApplication {
 
 	public static void main(String[] args) {
@@ -22,7 +24,7 @@ public class CmpApplication {
 	@GetMapping("/")
 	public String pingMessage(){
 		return "PONG";
-	}
+	}		// For PINGING THE APPLICATION
 
 	@Bean
 	public FilterRegistrationBean<CorsFilter> corsFilter(){
