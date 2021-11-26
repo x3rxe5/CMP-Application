@@ -33,7 +33,7 @@ export default function Signup() {
 
     if(user.username !== '' && user.email !== '' && user.password !== '' && user.firstName !== '' && user.lastName !== '' && user.dob !== ''){
       console.log(user);
-      axios.post(Constants.Backend_URL+'/api/v1/users/register', formData, { withCredentials:true })
+      axios.post(Constants.Backend_URL+'api/v1/users/register', formData, { withCredentials:true })
       .then(res => {
         console.log(`this is status -> `,res.status);
         if(res.status === 201){
@@ -56,7 +56,10 @@ export default function Signup() {
   }
 
   const handleCalendarChange = (e) => {
-    console.log("from Calendar",e.target.value);
+    console.log("this is e target name ",e.target.name);
+    const _d = new Date(e.target.value);        
+    const convertedDateString = _d.getFullYear()+"/"+(parseInt(_d.getMonth())+1)+"/"+_d.getDate();    
+    setUser({...user,[e.target.name]:convertedDateString})    
   }
 
 
@@ -151,6 +154,7 @@ export default function Signup() {
                       Date of birth
                     </div>
                     <DatePickerComponent
+                      name="dob"
                       format='dd-MMM-yy'                     
                       onChange={handleCalendarChange}
                     />
