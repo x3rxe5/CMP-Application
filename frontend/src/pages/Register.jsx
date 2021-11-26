@@ -3,8 +3,9 @@ import axios from "axios";
 import { ToastContainer } from 'react-toastify';
 import ToastComponent from '../components/ToastComponent';
 import 'react-toastify/dist/ReactToastify.css';
-import Calendar from "react-calendar";
-import 'react-calendar/dist/Calendar.css';
+// import Calendar from "react-calendar";
+// import 'react-calendar/dist/Calendar.css';
+import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
 import Constants from '../Constant';
 
 
@@ -52,6 +53,10 @@ export default function Signup() {
 
   const handleChange = (e) => {
     setUser({...user, [e.target.name]: e.target.value});
+  }
+
+  const handleCalendarChange = (e) => {
+    console.log("from Calendar",e.target.value);
   }
 
 
@@ -145,11 +150,15 @@ export default function Signup() {
                     <div className="text-sm font-bold text-gray-700 tracking-wide">
                       Date of birth
                     </div>
-                    <Calendar 
+                    <DatePickerComponent
+                      format='dd-MMM-yy'                     
+                      onChange={handleCalendarChange}
+                    />
+                    {/* <Calendar 
                       onChange={handleChange}
                       selectRange={true}
                       defaultView='decade'
-                    />
+                    /> */}
                     {/* <input
                       className="w-1/2 text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
                       type="text"
