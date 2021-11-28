@@ -3,36 +3,33 @@ import axios from "axios";
 import { ToastContainer } from 'react-toastify';
 import ToastComponent from '../components/ToastComponent';
 import 'react-toastify/dist/ReactToastify.css';
+import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
+import Constants from '../Constant';
+
 
 export default function Signup() {
+
   const [user,setUser] = useState({
     username:'',
     email:'',
     password:'',
-    confirmPassword:'',
-    photo:''
+    firstName:"",
+    lastName:"",
+    dob:""
   });
 
-  
-  
-
   const handleSubmit = (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('username', user.username);
-    formData.append('email', user.email);
-    formData.append('password', user.password);
-    formData.append('confirmPassword', user.confirmPassword);
-    formData.append('photo', user.photo);
+    e.preventDefault();    
 
-    if(user.username !== '' && user.email !== '' && user.password !== '' && user.confirmPassword !== '' && user.photo !== ''){
+
+    if(user.username !== '' && user.email !== '' && user.password !== '' && user.firstName !== '' && user.lastName !== '' && user.dob !== ''){
       console.log(user);
-      axios.post('http://localhost:5000/signup', formData, { withCredentials:true })
+      axios.post(Constants.Backend_URL+'api/v1/users/register', user) //, { withCredentials:true }
       .then(res => {
         console.log(`this is status -> `,res.status);
         if(res.status === 201){
           new ToastComponent("You are successfully logged in").onSuccessMessage();          
-        }else if(res.status === 400){
+        }else if(res.status === 417){
           new ToastComponent(res.message).onProperFailureMessage();
         }else{
           new ToastComponent("You are successfully logged in").onUnknownFailure();
@@ -47,6 +44,13 @@ export default function Signup() {
 
   const handleChange = (e) => {
     setUser({...user, [e.target.name]: e.target.value});
+  }
+
+  const handleCalendarChange = (e) => {
+    console.log("this is e target name ",e.target.name);
+    const _d = new Date(e.target.value);
+    const convertedDateString = _d.getFullYear()+"-"+(parseInt(_d.getMonth())+1)+"-"+_d.getDate();
+    setUser({...user,[e.target.name]:convertedDateString})
   }
 
 
@@ -67,56 +71,98 @@ export default function Signup() {
             </h2>
             <div className="mt-12">
               <form onSubmit={handleSubmit} encType='multipart/form-data'> 
-                <div>
-                  <div className="text-sm font-bold text-gray-700 tracking-wide">
-                    Username
-                  </div>
-                  <input
-                    className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
-                    type="text"
-                    placeholder=""        
-                    name="username"                 
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="mt-5">
-                  <div className="text-sm font-bold text-gray-700 tracking-wide">
-                    Email Address
-                  </div>
-                  <input
-                    className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
-                    type="email"
-                    name="email"
-                    placeholder="mike@gmail.com"
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="mt-5">
-                  <div className="flex justify-between items-center">
+                <div className="flex flex-1 w-full">
+                  <div className='w-1/2'>
                     <div className="text-sm font-bold text-gray-700 tracking-wide">
-                      Password
-                    </div>                    
+                      First Name
+                    </div>
+                    <input
+                      className="w-1/2 text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
+                      type="text"
+                      placeholder="Joe"        
+                      name="firstName"                 
+                      onChange={handleChange}
+                    />
                   </div>
-                  <input
-                    className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
-                    type="password"
-                    name="password"
-                    placeholder="Enter your password"
-                    onChange={handleChange}
-                  />
+                  <div className='w-1/2'>
+                    <div className="text-sm font-bold text-gray-700 tracking-wide">
+                      Last Name
+                    </div>
+                    <input
+                      className="w-1/2 text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
+                      type="text"
+                      placeholder="Doe"        
+                      name="lastName"    
+                      onChange={handleChange}
+                    />
+                  </div>
                 </div>
-                <div className='mt-5'>
-                  <div className="text-sm font-bold text-gray-700 tracking-wide">
-                    Confirm Password
+                  <div className="flex flex-1 w-full">
+                    <div className="mt-5 w-1/2">
+                      <div className="text-sm font-bold text-gray-700 tracking-wide">
+                        Email Address
+                      </div>
+                      <input
+                        className="w-1/2 text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
+                        type="email"
+                        name="email"
+                        placeholder="mike@gmail.com"
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div className="mt-5 w-1/2">
+                      <div className="flex justify-between items-center">
+                        <div className="text-sm font-bold text-gray-700 tracking-wide">
+                          Password
+                        </div>                    
+                      </div>
+                      <input
+                        className="w-1/2 text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
+                        type="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        onChange={handleChange}
+                      />
+                    </div>                            
                   </div>
-                  <input
-                    className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
-                    type="password"
-                    name="confirmPassword"
-                    placeholder=""
-                    onChange={handleChange}
-                  />
-                </div>                
+
+
+                <div className="flex flex-1 w-full mt-6">
+                  <div className='w-1/2'>
+                    <div className="text-sm font-bold text-gray-700 tracking-wide">
+                      Username
+                    </div>
+                    <input
+                      className="w-1/2 text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
+                      type="text"
+                      placeholder=""        
+                      name="username"                 
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className='w-1/2'>
+                    <div className="text-sm font-bold text-gray-700 tracking-wide">
+                      Date of birth
+                    </div>
+                    <DatePickerComponent
+                      name="dob"
+                      format='dd-MMM-yy'                     
+                      onChange={handleCalendarChange}
+                    />
+                    {/* <Calendar 
+                      onChange={handleChange}
+                      selectRange={true}
+                      defaultView='decade'
+                    /> */}
+                    {/* <input
+                      className="w-1/2 text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
+                      type="text"
+                      placeholder="birth date"        
+                      name="dob"    
+                      onChange={handleChange}
+                    /> */}
+                  </div>
+                </div>
                 <div className="mt-10">
                   <button
                     className="bg-indigo-500 text-gray-100 p-4 w-full rounded-full tracking-wide
