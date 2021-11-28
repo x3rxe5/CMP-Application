@@ -3,8 +3,6 @@ import axios from "axios";
 import { ToastContainer } from 'react-toastify';
 import ToastComponent from '../components/ToastComponent';
 import 'react-toastify/dist/ReactToastify.css';
-// import Calendar from "react-calendar";
-// import 'react-calendar/dist/Calendar.css';
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
 import Constants from '../Constant';
 
@@ -21,19 +19,12 @@ export default function Signup() {
   });
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append('username', user.username);
-    formData.append('email', user.email);
-    formData.append('password', user.password);
-    formData.append('dob', user.dob);
-    formData.append('firstName', user.firstName);
-    formData.append('lastName', user.lastName);
+    e.preventDefault();    
 
 
     if(user.username !== '' && user.email !== '' && user.password !== '' && user.firstName !== '' && user.lastName !== '' && user.dob !== ''){
       console.log(user);
-      axios.post(Constants.Backend_URL+'api/v1/users/register', formData, { withCredentials:true })
+      axios.post(Constants.Backend_URL+'api/v1/users/register', user) //, { withCredentials:true }
       .then(res => {
         console.log(`this is status -> `,res.status);
         if(res.status === 201){
@@ -57,9 +48,9 @@ export default function Signup() {
 
   const handleCalendarChange = (e) => {
     console.log("this is e target name ",e.target.name);
-    const _d = new Date(e.target.value);        
-    const convertedDateString = _d.getFullYear()+"/"+(parseInt(_d.getMonth())+1)+"/"+_d.getDate();    
-    setUser({...user,[e.target.name]:convertedDateString})    
+    const _d = new Date(e.target.value);
+    const convertedDateString = _d.getFullYear()+"-"+(parseInt(_d.getMonth())+1)+"-"+_d.getDate();
+    setUser({...user,[e.target.name]:convertedDateString})
   }
 
 

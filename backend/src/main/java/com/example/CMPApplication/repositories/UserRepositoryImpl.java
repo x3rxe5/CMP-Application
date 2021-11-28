@@ -61,14 +61,16 @@ public class UserRepositoryImpl implements UserRepository {
         try{
             String hashPassword = BCrypt.hashpw(password,BCrypt.gensalt(12));
             KeyHolder keyHolder = new GeneratedKeyHolder();
-            LocalDate date = LocalDate.parse(dob);
+            System.out.println("This is date we got from frontend -> "+dob+" and its type -> "+dob.getClass().getName());
+//            LocalDate date = LocalDate.parse(dob);
+//            System.out.println("This is date we are going to store -> "+date);
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(SQL_CREATE, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1,firstName);
                 ps.setString(2,lastName);
                 ps.setString(3,email);
                 ps.setString(4,hashPassword);
-                ps.setDate(5, Date.valueOf(date));
+                ps.setDate(5, Date.valueOf(dob));
                 ps.setString(6,userName);
                 return ps;
             },keyHolder);
