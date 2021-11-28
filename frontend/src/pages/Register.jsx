@@ -29,7 +29,7 @@ export default function Signup() {
         console.log(`this is status -> `,res.status);
         if(res.status === 201){
           new ToastComponent("You are successfully logged in").onSuccessMessage();          
-        }else if(res.status === 400){
+        }else if(res.status === 417){
           new ToastComponent(res.message).onProperFailureMessage();
         }else{
           new ToastComponent("You are successfully logged in").onUnknownFailure();

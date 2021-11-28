@@ -4,25 +4,34 @@ import { ToastContainer } from 'react-toastify';
 import ToastComponent from '../components/ToastComponent';
 import axios from "axios";
 
+import { isAuth } from '../slices/AuthSlices';
+import { useDispatch } from 'react-redux';
+
 
 const Login = () => {
+
+    // user mode
     const [user,setUser] = useState(
       {
         email:"",
         password:""
       }
     );
+    
+    // Redux mode
+    const dispatch = useDispatch();
 
+    
+    // Methods
     const handleSubmit = async (e) => {
       e.preventDefault();
-      const formData = new FormData();
-      formData.append("email",user.email);
-      formData.append("password",user.password);
+
       console.log(user);
-      await axios.post("http://localhost:5000/login",user,{ withCredentials:true }).then(res => {
+      await axios.post("http://localhost:8080/api/v1/users/login",user).then(res => {
         console.log(res);
-        if(res.status === 201){
+        if(res.status === 200){
           new ToastComponent("You are successfully logged in").onSuccessMessage();
+          dispatch(isAuth());
         }else if(res.status === 400){          
           new ToastComponent(res.data).onProperFailureMessage();
         }else{          
