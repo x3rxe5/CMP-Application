@@ -21,6 +21,11 @@ public class MediaResources {
     @Autowired
     MediaService mediaService;
 
+    @GetMapping("/ping")
+    public String pingPongMethod(){
+        return "Ping : Pong";
+    }
+
     @PostMapping("/upload")
     public ResponseEntity<Map<String,String>> uploadMedia(HttpServletRequest request,
                                                           @RequestParam("file") MultipartFile file) throws ETMediaException {

@@ -47,7 +47,11 @@ public class CmpApplication {
 		FilterRegistrationBean<AuthFilter> registrationBean = new FilterRegistrationBean<>();
 		AuthFilter authFilter = new AuthFilter();
 		registrationBean.setFilter(authFilter);
+
+		// Adding URL patterns for restrictions
 		registrationBean.addUrlPatterns("/api/v1/chatroom/*");
+
+
 
 		return registrationBean;
 	}

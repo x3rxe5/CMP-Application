@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.time.LocalDate;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
