@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Date;
 import java.util.HashMap;
@@ -67,6 +68,28 @@ public class UserResources {
         return new ResponseEntity<>(cookieMap, HttpStatus.CREATED);
     }
 
+    @GetMapping("/read-cookie")
+    public ResponseEntity<Map<String,String>> readTheCookie(HttpServletRequest request) {
+        Map<String,String> map = new HashMap<>();
+        try{
+            Cookie[] cookies = request.getCookies();
+            String cookieValue = "";
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("token")) {
+                        System.out.println("Cookie existed and value is "+cookie.getValue());
+                        cookieValue = cookie.getValue();
+                    }
+                }
+            }
+            map.put("fetchedTokenId","existed "+cookieValue);
+        }catch(Exception e){
+            map.put("error",e.toString());
+            System.out.print("error -> "+e);
+        }
+        return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
+    }
+
     private Map<String,String> generateToken(User user){
         long timeStamp = System.currentTimeMillis();
         String token = Jwts.builder().signWith(SignatureAlgorithm.HS256, Constants.API_SECRET_KEY)
@@ -98,7 +121,6 @@ public class UserResources {
         cookie.setMaxAge(3 * 24 * 60 * 60); // expires in 3 days
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
-
         return cookie;
     }
 

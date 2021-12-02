@@ -4,7 +4,6 @@ import com.example.CMPApplication.Constants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.web.filter.GenericFilterBean;
-import org.springframework.web.util.WebUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -27,7 +26,12 @@ public class AuthFilter extends GenericFilterBean {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         String authHeader = request.getHeader("Authorization");
-        Cookie name = WebUtils.getCookie(request, "token");
+
+        // From Cookie Reading
+        Cookie[] cookies = request.getCookies();
+        String name = cookieNameParsing(cookies);
+
+
 
         if(authHeader != null){
             String authHeaderArr[] = authHeader.split("Bearer ");
@@ -46,21 +50,33 @@ public class AuthFilter extends GenericFilterBean {
         }else{
             // parsing jwt string with Cookie and set to parsingToken()
             if (name != null) {
-                parsingToken(request,name.getValue());
+                parsingToken(request,name);
             } else {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN,"Authorization header must be provided");
+                return;
             }
-            return;
         }
 
         filterChain.doFilter(request,response);
     }
 
-    // Private method for parsing token
+    // Parsing token
     private void parsingToken(HttpServletRequest request, String token){
-
         Claims claims = Jwts.parser().setSigningKey(Constants.API_SECRET_KEY).parseClaimsJws(token).getBody();
         request.setAttribute("userId",Integer.parseInt(claims.get("userId").toString()));
+    }
 
+    // Parsing cookie name
+    private String cookieNameParsing(Cookie cookies[]){
+        String cookieName = new String();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("token")) {
+                    cookieName = cookie.getValue();
+                }
+            }
+        }
+
+        return cookieName;
     }
 }
