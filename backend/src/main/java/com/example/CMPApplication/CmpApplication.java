@@ -6,11 +6,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.nio.file.attribute.FileTime;
 
 @SpringBootApplication
@@ -25,6 +28,22 @@ public class CmpApplication {
 	public String pingMessage(){
 		return "PONG";
 	}		// For PINGING THE APPLICATION
+
+	@PostMapping("/validate-cookie")
+	public Integer validateCookie(HttpServletRequest request){
+		int flag = 0;
+		Cookie[] cookies = request.getCookies();
+		String cookieName = new String();
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals("token")) {
+					if(cookie.getValue() != null) { flag = 1; }
+				}
+			}
+		}
+
+		return flag;
+	}
 
 	@Bean
 	public FilterRegistrationBean<CorsFilter> corsFilter(){
@@ -50,8 +69,6 @@ public class CmpApplication {
 
 		// Adding URL patterns for restrictions
 		registrationBean.addUrlPatterns("/api/v1/chatroom/*");
-
-
 
 		return registrationBean;
 	}
