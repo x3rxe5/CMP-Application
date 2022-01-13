@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,10 +36,11 @@ public class UserResources {
 
         // for setting up cookie
         Map<String,String> cookieMap = generateToken(user);
-        Cookie cookie = generateCookie(cookieMap.get("token"));
+        ResponseCookie resCookie = generateCookie(cookieMap.get("token"));
 
         // adding cookie to the response
-        response.addCookie(cookie);
+        response.addHeader("Set-Cookie", resCookie.toString());
+
 
         // return the status
         return new ResponseEntity<>(cookieMap, HttpStatus.OK);
@@ -60,10 +62,11 @@ public class UserResources {
 
         // for setting up cookie
         Map<String,String> cookieMap = generateToken(user);
-        Cookie cookie = generateCookie(cookieMap.get("token"));
+        ResponseCookie resCookie = generateCookie(cookieMap.get("token"));
 
         // adding cookie to the response
-        response.addCookie(cookie);
+        response.addHeader("Set-Cookie", resCookie.toString());
+
 
         return new ResponseEntity<>(cookieMap, HttpStatus.CREATED);
     }
@@ -116,12 +119,20 @@ public class UserResources {
         return username + "#" + numericUUID.substring(3,7);
     }
 
-    private Cookie generateCookie(String token){
-        Cookie cookie = new Cookie("token", token);
-        cookie.setMaxAge(3 * 24 * 60 * 60); // expires in 3 days
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        return cookie;
+    private ResponseCookie generateCookie(String token){
+//        Cookie cookie = new Cookie("token", token);
+//        cookie.setMaxAge(3 * 24 * 60 * 60); // expires in 3 days
+//        cookie.setSecure(true);
+//        cookie.setHttpOnly(true);
+//        return cookie;
+        ResponseCookie resCookie = ResponseCookie.from("token", token)
+                .httpOnly(true)
+                .sameSite("None")
+                .secure(true)
+                .path("/")
+                .maxAge(Math.toIntExact(3 * 24 * 60 * 60))
+                .build();
+        return resCookie;
     }
 
 }
