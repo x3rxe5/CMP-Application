@@ -5,18 +5,19 @@ import { loggedOutFromReducers,isAuth } from "./../slices/AuthSlices";
 import axios from "axios";
 
 const Header = () => {
-    const { loggedInValue } = useSelector(state => state.authenticationReducers);
+    const val = useSelector(state => state.authenticationReducers.loggedInValue);
+    console.log("This is val -> ",val);
     const dispatch = useDispatch();
     useEffect(() => {
-        axios.get("http://localhost:8080/validate-cookie")
-        .then(res => {     
+        axios.get("http://localhost:8080/api/v1/users/testCookie")
+        .then(res => {
             console.log(res.data);
-            if(res.data === 1){
-                dispatch(isAuth());
+            if(res.data === 1 || localStorage.getItem("token") === "exist"){
+              dispatch(isAuth());
             }
         })
         .catch(err => console.log(err));
-    },[]);
+    },[dispatch]);
 
   
 
@@ -48,7 +49,7 @@ const Header = () => {
                 </Link>
                 <div className="lg:w-2/5 inline-flex lg:justify-end ml-5 lg:ml-0">
                     {
-                        loggedInValue && loggedInValue 
+                        val && val
                         ? <>
                             <DashboardComponentLink />
                         </> 

@@ -36,10 +36,9 @@ public class UserResources {
 
         // for setting up cookie
         Map<String,String> cookieMap = generateToken(user);
-        ResponseCookie resCookie = generateCookie(cookieMap.get("token"));
 
         // adding cookie to the response
-        response.addHeader("Set-Cookie", resCookie.toString());
+        response.addCookie(generateCookie(cookieMap.get("token")));
 
 
         // return the status
@@ -62,10 +61,10 @@ public class UserResources {
 
         // for setting up cookie
         Map<String,String> cookieMap = generateToken(user);
-        ResponseCookie resCookie = generateCookie(cookieMap.get("token"));
+//        ResponseCookie resCookie = generateCookie(cookieMap.get("token"));
 
         // adding cookie to the response
-        response.addHeader("Set-Cookie", resCookie.toString());
+        response.addCookie(generateCookie(cookieMap.get("token")));
 
 
         return new ResponseEntity<>(cookieMap, HttpStatus.CREATED);
@@ -77,8 +76,10 @@ public class UserResources {
         try{
             Cookie[] cookies = request.getCookies();
             String cookieValue = "";
+            System.out.println("First step Approached from here"+cookies);
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
+                    System.out.println(cookie);
                     if (cookie.getName().equals("token")) {
                         System.out.println("Cookie existed and value is "+cookie.getValue());
                         cookieValue = cookie.getValue();
@@ -90,6 +91,17 @@ public class UserResources {
             map.put("error",e.toString());
             System.out.print("error -> "+e);
         }
+        return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/testCookie")
+    public ResponseEntity<Map<String,String>> testCookie(@CookieValue(name = "token") String token){
+        Map<String,String> map = new HashMap<>();
+        System.out.println("token from outside -> "+token);
+        if(token!=null){
+            System.out.println(token);
+        }
+
         return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
     }
 
@@ -119,20 +131,24 @@ public class UserResources {
         return username + "#" + numericUUID.substring(3,7);
     }
 
-    private ResponseCookie generateCookie(String token){
+    private Cookie generateCookie(String token){
 //        Cookie cookie = new Cookie("token", token);
 //        cookie.setMaxAge(3 * 24 * 60 * 60); // expires in 3 days
 //        cookie.setSecure(true);
 //        cookie.setHttpOnly(true);
 //        return cookie;
-        ResponseCookie resCookie = ResponseCookie.from("token", token)
-                .httpOnly(true)
-                .sameSite("None")
-                .secure(true)
-                .path("/")
-                .maxAge(Math.toIntExact(3 * 24 * 60 * 60))
-                .build();
-        return resCookie;
+        Cookie cookie = new Cookie("token",token);
+
+        // expires in 7 days
+        cookie.setMaxAge(7 * 24 * 60 * 60);
+
+        // optional properties
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+
+        // add cookie to response
+        return cookie;
     }
 
 }

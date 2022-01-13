@@ -35,6 +35,7 @@ public class CmpApplication {
 		String cookieName = new String();
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
+				System.out.println("Cookie that exist -> "+cookie.getName());
 				if (cookie.getName().equals("token")) {
 					if(cookie.getValue() != null) { flag = 1; }
 				}
