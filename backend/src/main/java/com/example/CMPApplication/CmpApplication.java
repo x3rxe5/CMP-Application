@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -29,7 +28,7 @@ public class CmpApplication {
 		return "PONG";
 	}		// For PINGING THE APPLICATION
 
-	@PostMapping("/validate-cookie")
+	@GetMapping("/validate-cookie")
 	public Integer validateCookie(HttpServletRequest request){
 		int flag = 0;
 		Cookie[] cookies = request.getCookies();
@@ -52,8 +51,9 @@ public class CmpApplication {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.addAllowedMethod("*");
-		configuration.addAllowedOrigin("*");
+		configuration.addAllowedOrigin("http://localhost:3000");
 		configuration.addAllowedHeader("*");
+		configuration.setAllowCredentials(true);
 		source.registerCorsConfiguration("/**",configuration);
 		registrationBean.setFilter(new CorsFilter(source));
 		registrationBean.setOrder(0);
