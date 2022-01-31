@@ -13,7 +13,6 @@ import org.springframework.web.filter.CorsFilter;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.nio.file.attribute.FileTime;
 
 @SpringBootApplication
 @RestController
@@ -30,11 +29,13 @@ public class CmpApplication {
 
 	@GetMapping("/validate-cookie")
 	public Integer validateCookie(HttpServletRequest request){
+		System.out.println("This is request -> "+request.toString());
 		int flag = 0;
 		Cookie[] cookies = request.getCookies();
 		String cookieName = new String();
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
+				System.out.println("Cookie that exist -> "+cookie.getName());
 				if (cookie.getName().equals("token")) {
 					if(cookie.getValue() != null) { flag = 1; }
 				}

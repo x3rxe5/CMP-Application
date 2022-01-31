@@ -27,10 +27,11 @@ const Login = () => {
       e.preventDefault();
 
       console.log(user);
-      await axios.post("http://localhost:8080/api/v1/users/login",user).then(res => {
+      await axios.post("http://localhost:8080/api/v1/users/login",user,{ withCredentials:true }).then(res => {
         console.log(res);
         if(res.status === 200){
           new ToastComponent("You are successfully logged in").onSuccessMessage();
+          localStorage.setItem("token","exist");
           dispatch(isAuth());
         }else if(res.status === 400){          
           new ToastComponent(res.data).onProperFailureMessage();

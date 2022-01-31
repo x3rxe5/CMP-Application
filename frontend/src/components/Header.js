@@ -1,24 +1,13 @@
 import { Link } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { loggedOutFromReducers,isAuth } from "./../slices/AuthSlices";
-import axios from "axios";
+import { loggedOutFromReducers } from "./../slices/AuthSlices";
+
 
 const Header = () => {
-    const { loggedInValue } = useSelector(state => state.authenticationReducers);
-    const dispatch = useDispatch();
-    useEffect(() => {
-        axios.get("http://localhost:8080/validate-cookie")
-        .then(res => {     
-            console.log(res.data);
-            if(res.data === 1){
-                dispatch(isAuth());
-            }
-        })
-        .catch(err => console.log(err));
-    },[]);
+    const val = useSelector(state => state.authenticationReducers.loggedInValue);
+   
 
-  
+    
 
     return (
         <header className="text-gray-600 body-font">
@@ -48,15 +37,14 @@ const Header = () => {
                 </Link>
                 <div className="lg:w-2/5 inline-flex lg:justify-end ml-5 lg:ml-0">
                     {
-                        loggedInValue && loggedInValue 
+                        val && val
                         ? <>
                             <DashboardComponentLink />
                         </> 
                         : <>
                             <LoginAndRegisterComponent />
                         </>
-                    }
-                    
+                    }                    
                 </div>
 
                 
