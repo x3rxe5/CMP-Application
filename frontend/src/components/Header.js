@@ -1,25 +1,13 @@
 import { Link } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { loggedOutFromReducers,isAuth } from "./../slices/AuthSlices";
-import axios from "axios";
+import { loggedOutFromReducers } from "./../slices/AuthSlices";
+
 
 const Header = () => {
     const val = useSelector(state => state.authenticationReducers.loggedInValue);
-    console.log("This is val -> ",val);
-    const dispatch = useDispatch();
-    useEffect(() => {
-        axios.get("http://localhost:8080/api/v1/users/testCookie")
-        .then(res => {
-            console.log(res.data);
-            if(res.data === 1 || localStorage.getItem("token") === "exist"){
-              dispatch(isAuth());
-            }
-        })
-        .catch(err => console.log(err));
-    },[dispatch]);
+   
 
-  
+    
 
     return (
         <header className="text-gray-600 body-font">
@@ -56,8 +44,7 @@ const Header = () => {
                         : <>
                             <LoginAndRegisterComponent />
                         </>
-                    }
-                    
+                    }                    
                 </div>
 
                 

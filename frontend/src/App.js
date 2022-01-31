@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -14,15 +14,30 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import { useDispatch} from "react-redux";
+import axios from "axios";
+import { isAuth } from "./slices/AuthSlices";
+import ProtectedRoute from "./components/ProtectedRoute";
+import ChatRoom from "./pages/ChatRoom";
 // Pages
 
 function App() {
+  
+  const dispatch = useDispatch();
+  useEffect(() => {
+      axios.get("http://localhost:8080/validate-cookie",{ withCredentials:true })
+      .then(res => {
+          if(res.data === 1){
+            dispatch(isAuth());
+          }
+      })
+      .catch(err => console.log(err));
+  },[dispatch]);
+
   return (
-    <>
-    
+    <>        
       <Router>
         <Header />
-        <Switch>
           <Route exact path="/">
             <Home />
           </Route>          
@@ -32,6 +47,8 @@ function App() {
           <Route path="/login">
             <Login />
           </Route>
+        <Switch>
+          <ProtectedRoute exact path="/chatroom" component={ChatRoom} />
         </Switch>
         <Footer />
       </Router>
