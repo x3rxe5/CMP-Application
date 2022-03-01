@@ -47,13 +47,7 @@ const Login = () => {
       setUser({...user, [e.target.name]: e.target.value});
     }
 
-    // const testCookie = () => {
-    //   axios.get("http://localhost:5000/cookie",{ withCredentials:true }).then(res => {
-    //     console.log(res);
-    //   }).catch(err => {
-    //     console.log(err);
-    //   })
-    // }
+  
 
     return (
       <>
