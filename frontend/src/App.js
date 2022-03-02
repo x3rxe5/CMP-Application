@@ -1,24 +1,21 @@
-import React, { useEffect } from "react";
+import axios from "axios";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
+  BrowserRouter as Router, Route,Switch
 } from "react-router-dom";
-
+import Footer from "./components/Footer";
 // Components
 import Header from "./components/Header";
-import Footer from "./components/Footer";
-
-// Pages
-import Home from "./pages/Home";
-import Register from "./pages/Register";
-import Login from "./pages/Login";
-import { useDispatch} from "react-redux";
-import axios from "axios";
-import { isAuth } from "./slices/AuthSlices";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ChatRoom from "./pages/ChatRoom";
+// Pages
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import { isAuth } from "./slices/AuthSlices";
+
+
 // Pages
 
 function App() {
@@ -37,6 +34,7 @@ function App() {
   return (
     <>        
       <Router>
+        <ProtectedRoute exact path="/chatroom" component={ChatRoom} />                
         <Header />
           <Route exact path="/">
             <Home />
@@ -46,11 +44,8 @@ function App() {
           </Route>
           <Route path="/login">
             <Login />
-          </Route>
-        <Switch>
-          <ProtectedRoute exact path="/chatroom" component={ChatRoom} />
-        </Switch>
-        <Footer />
+          </Route>  
+        <Footer />        
       </Router>
     </>
   );

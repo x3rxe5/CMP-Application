@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import axios from "axios";
+import { isAuth } from "./../slices/AuthSlices";
 import { Link } from "react-router-dom";
 import { useSelector,useDispatch } from "react-redux";
 import { loggedOutFromReducers } from "./../slices/AuthSlices";
@@ -5,9 +8,17 @@ import { loggedOutFromReducers } from "./../slices/AuthSlices";
 
 const Header = () => {
     const val = useSelector(state => state.authenticationReducers.loggedInValue);
-   
 
-    
+    const dispatch = useDispatch();
+    useEffect(() => {
+      axios.get("http://localhost:5000/validate-cookie",{ withCredentials:true })
+      .then(res => {               
+          if(res.data.data){
+            dispatch(isAuth());
+          }
+      })
+      .catch(err => console.log(err));
+    },[dispatch]);
 
     return (
         <header className="text-gray-600 body-font">
