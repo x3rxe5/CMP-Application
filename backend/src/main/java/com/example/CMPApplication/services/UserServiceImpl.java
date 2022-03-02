@@ -47,4 +47,14 @@ public class UserServiceImpl implements UserService{
         Integer userId = userRepository.create(firstName,lastName,userName,email,password,dob);
         return userRepository.findById(userId);
     }
+
+    @Override
+    public int findUserByIndex(int userid) throws ETAuthExceptions{
+        int bool = 0;
+        User user = userRepository.findById(userid);
+        if(user.getEmail().length() > 1){
+            bool = 1;
+        }
+        return bool;
+    }
 }

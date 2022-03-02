@@ -26,7 +26,23 @@ create table ca_media(
     data bytea not null
 );
 alter table ca_media add constraint media_cat_fk
-foreign key(user_id) references ca_users(user_id);
+foreign key(user_id) references ca_users(user_id)
+on delete cascade
+on update cascade;
+
+
+create table ca_friends_list(
+    frd_id integer primary key not null,
+    user_id integer not null,
+    friend_id integer not null,
+    accepted integer not null,
+    blocked_status integer not null
+);
+alter table ca_friends_list add constraint friends_list_fk
+foreign key(user_id) references ca_users(user_id)
+on delete cascade
+on update cascade;
 
 create sequence ca_users_seq increment 1 start 1;
 create sequence ca_media_seq increment 1 start 1;
+create sequence ca_friends_list_seq increment 1 start 1;
