@@ -3,6 +3,7 @@ package com.example.CMPApplication.resources;
 import com.example.CMPApplication.Constants;
 import com.example.CMPApplication.models.User;
 import com.example.CMPApplication.services.UserService;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,40 +70,30 @@ public class UserResources {
         return new ResponseEntity<>(cookieMap, HttpStatus.CREATED);
     }
 
-    @GetMapping("/read-cookie")
+    @PostMapping("/read-cookie")
     public ResponseEntity<Map<String,String>> readTheCookie(HttpServletRequest request) {
         Map<String,String> map = new HashMap<>();
         try{
             Cookie[] cookies = request.getCookies();
-            String cookieValue = "";
-            System.out.println("First step Approached from here"+cookies);
+            Integer userResponse = 0;
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
-                    System.out.println(cookie);
                     if (cookie.getName().equals("token")) {
-                        System.out.println("Cookie existed and value is "+cookie.getValue());
-                        cookieValue = cookie.getValue();
+                        if(cookie.getValue() != null) {
+                            Claims claims = Jwts.parser().setSigningKey(Constants.API_SECRET_KEY).parseClaimsJws(cookie.getValue()).getBody();
+                            userResponse = userService.findUserByIndex(Integer.parseInt(claims.get("userId").toString()));
+                        }
                     }
                 }
             }
-            map.put("fetchedTokenId","existed "+cookieValue);
+
+            map.put("user",userResponse.toString());
         }catch(Exception e){
             map.put("error",e.toString());
-            System.out.print("error -> "+e);
         }
         return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/testCookie")
-    public ResponseEntity<Map<String,String>> testCookie(@CookieValue(name = "token") String token){
-        Map<String,String> map = new HashMap<>();
-        System.out.println("token from outside -> "+token);
-        if(token!=null){
-            System.out.println(token);
-        }
-
-        return new ResponseEntity<>(map,HttpStatus.ACCEPTED);
-    }
 
     private Map<String,String> generateToken(User user){
         long timeStamp = System.currentTimeMillis();
