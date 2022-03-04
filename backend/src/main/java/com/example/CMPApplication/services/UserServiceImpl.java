@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
@@ -15,6 +16,11 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     UserRepository userRepository;
+
+    @Override
+    public List<User> findAll() throws ETAuthExceptions{
+        return userRepository.findAll();
+    }
 
     @Override
     public User validateUser(String email, String password) throws ETAuthExceptions {
@@ -56,5 +62,11 @@ public class UserServiceImpl implements UserService{
             bool = 1;
         }
         return bool;
+    }
+
+    @Override
+    public User userFindById(Integer userId) throws ETAuthExceptions{
+        User user = userRepository.findById(userId);
+        return user;
     }
 }

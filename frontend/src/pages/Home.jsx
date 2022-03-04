@@ -4,8 +4,8 @@ import Feature from "../components/Feature";
 const Home = () => {
     return (
         <>        
-            <Hero />
-            <Feature />
+          <Hero />
+          <Feature />
         </>
     );
 }

@@ -3,7 +3,7 @@ package com.example.CMPApplication.repositories;
 import com.example.CMPApplication.exceptions.ETAuthExceptions;
 import com.example.CMPApplication.models.User;
 
-import java.sql.Date;
+import java.util.List;
 
 public interface UserRepository {
 
@@ -18,4 +18,6 @@ public interface UserRepository {
 
     // for finding user by id;
     User findById(Integer userId);
+
+    List<User> findAll() throws ETAuthExceptions;
 }

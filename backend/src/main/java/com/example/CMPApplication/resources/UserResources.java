@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,6 +27,21 @@ public class UserResources {
     @Autowired
     UserService userService;
 
+    @GetMapping("/allUsers")
+    public ResponseEntity<Map<String, List<User>>> allUsers(HttpServletResponse response){
+        List<User> user = userService.findAll();
+        Map<String,List<User>> map = new HashMap<>();
+        map.put("data",user);
+        return new ResponseEntity<>(map,HttpStatus.OK);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<Map<String,User>> fetchUserById(@RequestParam Integer userId) {
+        Map<String,User> map = new HashMap<>();
+        User user = userService.userFindById(userId);
+        map.put("data",user);
+        return new ResponseEntity<>(map,HttpStatus.OK);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<Map<String,String>> loginUser(HttpServletResponse response, @RequestBody Map<String, Object> userMap){
@@ -61,16 +77,13 @@ public class UserResources {
 
         // for setting up cookie
         Map<String,String> cookieMap = generateToken(user);
-//        ResponseCookie resCookie = generateCookie(cookieMap.get("token"));
-
         // adding cookie to the response
         response.addCookie(generateCookie(cookieMap.get("token")));
-
 
         return new ResponseEntity<>(cookieMap, HttpStatus.CREATED);
     }
 
-    @PostMapping("/read-cookie")
+    @GetMapping("/read-cookie")
     public ResponseEntity<Map<String,String>> readTheCookie(HttpServletRequest request) {
         Map<String,String> map = new HashMap<>();
         try{
@@ -108,11 +121,11 @@ public class UserResources {
                 .compact();
         Map<String,String> map = new HashMap<>();
         map.put("token",token);
+        map.put("username",user.getUserName());
         return map;
     }
 
     private String generateUUIDToken(String username){
-
         UUID uuid = UUID.randomUUID();
         String numericUUID = Long.toString(uuid.getMostSignificantBits())
                 + Long.toString(uuid.getLeastSignificantBits());
