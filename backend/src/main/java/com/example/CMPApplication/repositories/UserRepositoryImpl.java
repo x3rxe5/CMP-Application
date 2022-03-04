@@ -13,13 +13,14 @@ import org.springframework.stereotype.Repository;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 
 
     // SQL_CREATE STRING
-    private static final String SQL_CREATE = "INSERT INTO ca_users ( USER_ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, DOB, USERNAME) VALUES ( NEXTVAL('CA_USERS_SEQ') , ?, ?, ?, ?, ?, ?)";
+    private static final String SQL_CREATE = "INSERT INTO ca_users (USER_ID, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, DOB, USERNAME) VALUES ( NEXTVAL('CA_USERS_SEQ') , ?, ?, ?, ?, ?, ?)";
 
     // SQL_FIND_BY ID
     private final static String SQL_FIND_BY_ID = "SELECT USER_ID,FIRST_NAME,LAST_NAME,EMAIL,PASSWORD,DOB,USERNAME FROM ca_users WHERE USER_ID = ?";
@@ -29,6 +30,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     // count by email and password
     private final static String SQL_FIND_BY_EMAIL = "SELECT USER_ID, EMAIL, USERNAME, PASSWORD FROM ca_users WHERE EMAIL = ?";
+
+    private final static String SQL_FIND_ALL = "SELECT * FROM ca_users";
 
 
     @Autowired
@@ -44,25 +47,25 @@ public class UserRepositoryImpl implements UserRepository {
     });
 
     public RowMapper<User> userRowMapper = ((rs, rowNum) -> {
-       return new User(
+        System.out.print("This is result set -> "+rs.getString("EMAIL"));
+       User user =  new User(
                rs.getInt("USER_ID"),
                rs.getString("FIRST_NAME"),
+               rs.getString("USERNAME"),
                rs.getString("LAST_NAME"),
                rs.getString("EMAIL"),
                rs.getString("PASSWORD"),
-               rs.getString("DOB"),
-               rs.getString("USERNAME")
+               rs.getString("DOB")
        );
+       return user;
     });
+
 
     @Override
     public Integer create(String firstName, String lastName, String userName, String email, String password, String dob) throws ETAuthExceptions {
         try{
             String hashPassword = BCrypt.hashpw(password,BCrypt.gensalt(12));
             KeyHolder keyHolder = new GeneratedKeyHolder();
-            System.out.println("This is date we got from frontend -> "+dob+" and its type -> "+dob.getClass().getName());
-//            LocalDate date = LocalDate.parse(dob);
-//            System.out.println("This is date we are going to store -> "+date);
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(SQL_CREATE, Statement.RETURN_GENERATED_KEYS);
                 ps.setString(1,firstName);
@@ -82,11 +85,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User findByEmailAndPassword(String email, String password) throws ETAuthExceptions {
-
         try{
             User user = jdbcTemplate.queryForObject(SQL_FIND_BY_EMAIL, userRowMapperIdAndPassword, new Object[]{email});
 
-            System.out.println(user);
             if(!BCrypt.checkpw(password,user.getPassword())){
                 throw new ETAuthExceptions("INVALID EMAIL OR PASSWORD");
             }
@@ -106,5 +107,15 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User findById(Integer userId) {
         return jdbcTemplate.queryForObject(SQL_FIND_BY_ID,userRowMapper,userId);
+    }
+
+    @Override
+    public List<User> findAll() throws ETAuthExceptions{
+        try{
+            List<User> users = jdbcTemplate.query(SQL_FIND_ALL,userRowMapper);
+            return users;
+        }catch (Exception e){
+            throw new ETAuthExceptions("Error Occur");
+        }
     }
 }

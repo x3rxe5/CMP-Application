@@ -1,7 +1,5 @@
 package com.example.CMPApplication.models;
 
-import java.sql.Date;
-
 public class User {
 
     // Private variables

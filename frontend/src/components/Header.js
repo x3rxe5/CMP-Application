@@ -10,10 +10,11 @@ const Header = () => {
     const val = useSelector(state => state.authenticationReducers.loggedInValue);
 
     const dispatch = useDispatch();
+    
     useEffect(() => {
-      axios.get("http://localhost:5000/validate-cookie",{ withCredentials:true })
+      axios.get("http://localhost:8080/api/v1/users/read-cookie",{ withCredentials:true })
       .then(res => {               
-          if(res.data.data){
+          if(res.data.user === '1'){
             dispatch(isAuth());
           }
       })
